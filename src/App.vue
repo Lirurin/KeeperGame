@@ -4,11 +4,11 @@
           .stat-wrap
               span.stat-text Stamina: {{ playerStamina }} %
               span.stat
-                span.stat-bar
+                span.stat-bar.stat-bar--stamina
           .stat-wrap
               span.stat-text Calories: {{ calories }} kcal
               span.stat
-                span.stat-bar
+                span.stat-bar.stat-bar--kcal
       .looting
           .wrap
               h2 Currently you are in {{ nowYouIn }}
@@ -308,9 +308,12 @@ export default {
     watch: {
         calories: function (val) {
             val >= 4000 ? this.calories = 4000 : null;
+            // document.querySelector('.stat-bar--stamina').
+            document.querySelector('.stat-bar--kcal').style.width = `${val}%`
         },
         playerStamina: function (val) {
             val >= 120 ? this.playerStamina = 120 : null;
+            // document.querySelector('.stat-bar--stamina').style.width = `${val*100/}%`
         }
     },
 
@@ -328,6 +331,8 @@ export default {
         tempArray.forEach(item => this.lootPull.temp.push({ name: item, quantity: 0}));
         console.log(tempArray)
         window.setInterval(this.caloriesToStamina, 10000) //hunger simulation
+        //stat-bars
+        document.querySelector('.stat-bar--stamina').style.width = `${this.playerStamina}%`
     },
 
 }
