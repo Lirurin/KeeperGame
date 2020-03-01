@@ -1,4 +1,4 @@
-# learn2
+# searcherGame[WIP]
 
 ## Project setup
 ```
