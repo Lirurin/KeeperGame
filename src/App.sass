@@ -3,6 +3,7 @@
 body
   margin: 0
   padding: 0
+  overflow: hidden
   #app
     position: relative
     height: 100vh
@@ -12,11 +13,28 @@ body
     display: flex
     justify-content: space-around
     align-items: center
+  .openInventory
+    position: absolute
+    bottom: 30px
+    left: 30px
+    padding: 10px
+    border: 1px solid #ffffff
+    color: #ffffff
   .inventory
-    //position: absolute
-    //left: 0
-    //top: 0
-    height: 100vh
+    z-index: 1
+    position: absolute
+    top: -50%
+    right: 50%
+    max-width: 600px
+    width: 100%
+    height: 600px
+    border: 1px solid #fff
+    background-color: #242424
+    transform: translate(50%, -50%)
+    transition: top .6s ease
+  .inventory.opened
+    top: 50%
+    transition: top .6s ease
   .equipment
     position: absolute
     right: 0
@@ -30,7 +48,7 @@ body
     svg
       height: 50px
       fill: #fff
-  .inventory, .location
+  .location
     max-width: 300px
     width: 100%
     min-height: 300px
