@@ -24,9 +24,18 @@
       .map
         button.buildings(@click="changeLocation(0)")
         button.park(@click="changeLocation(1)")
-    .inventory(:class="{ opened: isInventoryOpen }")
-      ul
-        li(v-for="(item) in availableItems" class='item') {{ item.name }} : {{ item.quantity }}
+    .backpack(:class="{ opened: isInventoryOpen }")
+      .backpack__inner
+        .inventory
+          .inventory__items
+            div(v-for="item in availableItems" class='item' @click="addToCraft(item)") 
+              img.item__icon(:src="require(`./assets/items/${item.id}.svg`)", alt="...")
+              span {{ item.quantity }}
+          .inventory__craft
+            .ctafting__place
+              div.craft__item(v-for="item in craftPile" @click="removeFromCraft(item)")
+                img.item__icon(:src="require(`./assets/items/${item.itemId}.svg`)", alt="...")
+            span.craft__btn CRAFT
     .equipment
       transition(name="fade")
         .available-equip
@@ -69,34 +78,23 @@ export default {
           {
           location: 'houses',
           lootMap: [  
-            //scrap
-            { item: { itemId: 0, name: 'wooden bits'}, weight: 30}, {item:  { itemId: 1, name: 'scrap wood'}, weight: 30}, { item: { itemId: 2, name: 'paper'}, weight: 20},
-            //useful
-            { item: { itemId: 3, name: 'can'}, weight: 7}, { item: { itemId: 4, name: 'wooden handle'}, weight: 5}, { item: { itemId: 4, name: 'wire'}, weight: 30},
-            //food
-            { item: { itemId: 5, name: 'food leftovers'}, weight: 20},{ item: { itemId: 6, name: 'preserved food'}, weight: 10},
-            //consumables
-            { item: { itemId: 7, name: 'match'}, weight: 5},
-            //equipment
-            { item: { itemId: 8, name: 'flashlight'}, weight: 1},
+            { item: 0, rate: 30}, {item: 1, rate: 30},  { item: 2, rate: 20},
+            { item: 3, rate: 7},  { item: 4, rate: 5},  { item: 5, rate: 30},
+            { item: 6, rate: 20}, { item: 7, rate: 10}, { item: 8, rate: 5},
+            { item: 9, rate: 1}, 
           ]
           },
           {
           location: 'park',
           lootMap: [  
-            //scrap
-            { item: { itemId: 0, name: 'wooden bits'}, weight: 50}, { item: { itemId: 1, name: 'scrap wood'}, weight: 30}, { item:{ itemId: 2, name: 'paper'}, weight: 40},
-            //useful
-            { item: { itemId: 4, name: 'wire'}, weight: 5},
-            //food
-            { item: { itemId: 5, name: 'food leftovers'}, weight: 10}, { item: { itemId: 6, name: 'preserved food'}, weight: 5},
-            //consumables
-            { item: { itemId: 7, name: 'match'}, weight: 3},
-            //equipment
-            { item: { itemId: 8, name: 'flashlight'}, weight: 1},
+            { item: 0, rate: 50}, { item: 1, rate: 30}, { item: 2, rate: 40},
+            { item: 5, rate: 5},  { item: 6, rate: 10}, { item: 7, rate: 5},
+            { item: 8, rate: 3},  { item: 9, rate: 1},
           ]
           },
         ],
+        // CRAFTING
+        craftPile: [],
 
         // QUESTING
         isQuest: true,
@@ -118,6 +116,7 @@ export default {
 
   methods: {
     ...mapActions(['giveItem', 'takeItem', 'setLootPool']),
+    ...mapGetters(['getItemMap']),
 
     // LOOTING
     timedLoot() {
@@ -134,11 +133,12 @@ export default {
     searchLoot() {
       if (this.playerStamina <= 0) {
         console.log('fatigue');
+        this.isDisabled = false;
       } else {
-        let foundItem = this.randomItem();
-        this.playerStamina -= this.getRandNum(7);
-        this.calories -= this.getRandNum(80);
-        this.giveItem(foundItem)
+        let foundItem = this.getItemMap()[this.randomItem()].name;
+        this.playerStamina -= this.getRandNum(5, 1);
+        this.calories -= this.getRandNum(45, 10);
+        this.giveItem({newItem:foundItem, num:1})
         foundItem === undefined ? this.lastFound = 'nothing' : this.lastFound = foundItem;
         this.isDisabled = false;
       }
@@ -146,13 +146,13 @@ export default {
 
     // RANDOMIZERS
     randomItem() {
-      // Normalise Weights
-      let weightTotal = 0;
+      // Normalise rates
+      let rateTotal = 0;
       for (let i = 0; i < this.lootArr[this.currentLocation].lootMap.length; i++) {
-        weightTotal += this.lootArr[this.currentLocation].lootMap[i].weight;
+        rateTotal += this.lootArr[this.currentLocation].lootMap[i].rate;
       }
       for (let i = 0; i < this.lootArr[this.currentLocation].lootMap.length; i++) {
-        this.lootArr[this.currentLocation].lootMap[i].distribution = this.lootArr[this.currentLocation].lootMap[i].weight / weightTotal;
+        this.lootArr[this.currentLocation].lootMap[i].distribution = this.lootArr[this.currentLocation].lootMap[i].rate / rateTotal;
       }
       //return item name
       let key = 0;
@@ -162,11 +162,11 @@ export default {
         key++;
       }
       key--;
-      return this.lootArr[this.currentLocation].lootMap[key].item.name;
+      return this.lootArr[this.currentLocation].lootMap[key].item;
     },
-    getRandNum(max) {
+    getRandNum(max, min) {
       let rand = Math.floor(Math.random() * Math.floor(max));
-      return rand === 0 ? 1 : rand
+      return rand <= min ? min : rand
     },
 
     // SURVIVAL AND NEEDS
@@ -174,12 +174,12 @@ export default {
       let innerThis = this;
       this.getLootPool.some((el) => {
         if (el.name === 'food leftovers' && el.quantity > 0) {
-          this.takeItem('food leftovers')
-          innerThis.calories += innerThis.getRandNum(250);
+          this.takeItem({removedItem: 'food leftovers', num: 1})
+          innerThis.calories += innerThis.getRandNum(250, 150);
         }
         else if (el.name === 'preserved food' && el.quantity > 0) {
-          this.takeItem('preserved food')
-          innerThis.calories += innerThis.getRandNum(1300);
+          this.takeItem({removedItem: 'preserved food', num: 1})
+          innerThis.calories += innerThis.getRandNum(1300, 450);
         }
       });
     },
@@ -199,22 +199,41 @@ export default {
     },
 
     addWood() {
-      if ((this.getCraftItem('wooden bits', 1))) {
-        this.burnTime += (300 + this.getRandNum(200));
-        this.getLootPool.filter(obj => (obj.name === 'wooden bits' && obj.quantity > 0) ? this.takeItem('wooden bits') : null);
+      if ((this.getCraftItem('stick', 1))) {
+        this.burnTime += (300 + this.getRandNum(200, 100));
+        this.getLootPool.filter(obj => (obj.name === 'stick' && obj.quantity > 0) ? this.takeItem({removedItem:'stick', num: 1}) : null);
       }
     },
 
     // CRAFTING
+    numOfItemsInPile(item) {
+      let num = 0;
+      for ( let el of this.craftPile) {
+        el.itemId === item.id ? num++: num = num;
+      }
+      return num
+    },
+
+    removeFromCraft(item) {
+      this.craftPile.splice(item.id, 1)
+      console.log(this.craftPile)
+    },
+
+    addToCraft(item) {
+      this.numOfItemsInPile(item)
+      if (item.quantity >= 1 && this.numOfItemsInPile(item) < item.quantity) {
+        this.craftPile.push(this.getItemMap()[item.id])
+      }
+    },
     getCraftItem(neededItem, itsQuantity) {
       return this.getLootPool.some(el => el.name === neededItem && el.quantity >= itsQuantity)
     },
 
     craftFire() {
-      if (this.fireNear === false && this.getCraftItem('scrap wood', 2) && this.getCraftItem('match', 1)) {
+      if (this.fireNear === false && this.getCraftItem('dried grass', 2) && this.getCraftItem('match', 1)) {
         this.fireNear = true;
-        this.getLootPool.filter(obj => (obj.name === 'scrap wood' && obj.quantity > 0) ? this.takeItem('scrap wood') : null);
-        this.getLootPool.filter(obj => (obj.name === 'match' && obj.quantity > 0) ? this.takeItem('match') : null);
+        this.getLootPool.filter(obj => (obj.name === 'dried grass' && obj.quantity > 0) ? this.takeItem('dried grass', 1) : null);
+        this.getLootPool.filter(obj => (obj.name === 'match' && obj.quantity > 0) ? this.takeItem('match', 1) : null);
       }
       this.countdownFire()
     },
@@ -267,17 +286,8 @@ export default {
 
   // LIFE СYCLE
   mounted() {
-    // get all possible loot and put into array
-    let tempArray = [];
-    this.lootArr.forEach(function (el) {
-      el.lootMap.forEach(function (el2) {
-        tempArray.push(el2.item.name);
-      });
-    });
-
-    // make only unique items left
-    tempArray = new Set(tempArray);
-    tempArray.forEach(item => this.setLootPool(item));
+    // initialize inventory
+    this.getItemMap().forEach(item => this.setLootPool(item));
 
     //hunger simulation
     window.setInterval(this.caloriesToStamina, 10000) 

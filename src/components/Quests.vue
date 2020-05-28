@@ -45,7 +45,7 @@ export default {
               text: 'second text',
               leadsTo: 0,
               routes: [
-                  { text: 'reward', leadsTo: 2, reward: { itemId: 7, name: 'match'}, questEnd: true},
+                  { text: 'reward', leadsTo: 2, reward: { itemId: 7, name: 'match', quantity: 1}, questEnd: true},
               ]
             }
           ],
@@ -66,7 +66,7 @@ export default {
     optionClick(option, id) {
       this.currentRemark = option.leadsTo;
       if ('reward' in option) {
-        this.giveItem(option.reward.name)
+        this.giveItem({newItem: option.reward.name, num: option.reward.quantity})
       }
       if ('questEnd' in option && option.questEnd === true) {
         this.isQuestStarted = false;
