@@ -23,29 +23,29 @@ export default {
 
       questPool: [
         {
-          questName: 'First Quest',
+          questName: 'Найти спички',
           questDone: false,
           remark: [
             {
-              text: 'default text',
+              text: 'На улице достаточно холодно, нужно как-то согреться',
               leadsTo: 1,
               routes: [
-                  { text: 'lead to 1', leadsTo: 1,},
+                  { text: 'Подумать о костре', leadsTo: 1,},
               ]
             },
             {
-              text: 'first text',
+              text: 'Проще всего будет найти ветки и траву, а вот со спичками проблемы',
               leadsTo: 0,
               routes: [
-                  { text: 'lead to 1', leadsTo: 1,},
-                  { text: 'lead to 2', leadsTo: 2,},
+                  { text: 'Вернуться', leadsTo: 1,},
+                  { text: 'Поискать спички на кухне ближайшего дома', leadsTo: 2,},
               ]
             },
             {
-              text: 'second text',
+              text: 'Вам повезло, рядом с грязной и запыленной газовой печью лежал один коробок',
               leadsTo: 0,
               routes: [
-                  { text: 'reward', leadsTo: 2, reward: { itemId: 7, name: 'match', quantity: 1}, questEnd: true},
+                  { text: '+3 спички', leadsTo: 2, reward: { itemId: 7, name: 'спичка', quantity: 3}, questEnd: true},
               ]
             }
           ],
@@ -75,15 +75,6 @@ export default {
       }
     },
   },
-
-  computed: {
-    
-  },
-
-  watch: {
-
-  }
-
 }
 </script>
 

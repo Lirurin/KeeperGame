@@ -25,6 +25,7 @@ body
     padding: 10px
     border: 1px solid #ffffff
     color: #ffffff
+    cursor: pointer
   .backpack
     z-index: 1
     position: absolute
@@ -45,11 +46,12 @@ body
     position: relative
     width: 100%
     height: 100%
-  .inventory
+  .backpack__inventory
     position: absolute
     right: 50%
     top: 50%
     display: flex
+    flex-direction: column
     justify-content: space-between
     max-width: 400px
     width: 100%
@@ -58,32 +60,62 @@ body
     border-radius: 15px
     background-color: #0c2429
     transform: translate(50%, -18%)
-  .inventory__items
+  .backpack__cont
+    display: flex
+    flex: 1
+  .backpack__craft-possible
+    height: 95px
+    padding: 0 15px 5px 15px
+    border-bottom: 1px solid #ffffff
+  .backpack__craft-list
+    overflow: auto
+    max-height: 65px
+    padding: 4px 10px
+  .backpack__craft-title
+    display: block
+    margin-top: 5px
+    color: #ffffff
+    text-align: center
+  .backpack__craft-option
+    display: flex
+    justify-content: space-between
+    padding-bottom: 5px
+    color: #ffffff
+    font-size: 14px
+  .backpack__craft-create
+    border-bottom: 1px solid #ffffff
+    cursor: pointer
+  .backpack__craft-list
+    display: flex
+    flex-direction: column
+  .backpack__items
     display: flex
     width: 80%
-    padding: 10px
+    padding: 10px 10px 5px 10px
     overflow-y: auto
-  .inventory__craft
+  .backpack__craft
     display: flex
     flex-direction: column
     align-items: center
     width: 20%
-    padding: 10px
+    padding: 15px 0 5px 0
     border-left: 1px solid #ffffff
-  .ctafting__place
+  .backpack__craft-place
     display: flex
     flex-direction: column
     align-items: center
     width: 100%
+    max-height: 250px
     overflow: auto
-  .craft__btn
+  .backpack__title
     padding: 4px
     border: 1px solid #ffffff
     border-radius: 5px
-    margin-top: auto
+    margin: auto auto 0 auto 
     font-size: 15px
     color: #ffffff
-  .craft__item
+    text-transform: uppercase
+  .backpack__craft-item
     width: 50px
     height: 50px
     padding: 4px
@@ -124,7 +156,7 @@ body
     border: 1px solid #ffffff
     color: #fff
     text-align: center
-  .item__icon
+  .backpack__icon
     width: 40px
     height: 40px
   .lootTimer

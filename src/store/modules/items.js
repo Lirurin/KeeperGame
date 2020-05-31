@@ -18,7 +18,7 @@ export default {
       state.lootPool.temp.some(el => el.name === removedItem ? el.quantity-=num : null);
     },
     updatePool(state, addedItem) {
-      state.lootPool.temp.push({id: addedItem.itemId, name: addedItem.name, quantity: 0})
+      state.lootPool.temp.push({id: addedItem.id, name: addedItem.name, quantity: 0})
     }
   },
   getters: {
@@ -32,19 +32,19 @@ export default {
   state: {
     itemMap: [  
       //scrap
-      { itemId: 0, name: 'stick'}, { itemId: 1, name: 'dried grass'}, { itemId: 2, name: 'paper'},
+      { id: 0, name: 'ветка'}, { id: 1, name: 'сухая трава'}, { id: 2, name: 'бумага'},
       //useful
-      { itemId: 3, name: 'can'}, { itemId: 4, name: 'handle'}, { itemId: 5, name: 'wire'},
+      { id: 3, name: 'жестянка'}, { id: 4, name: 'рукоять'}, { id: 5, name: 'провод'},
       //food
-      { itemId: 6, name: 'food leftovers'}, { itemId: 7, name: 'preserved food'},
+      { id: 6, name: 'остатки еды'}, { id: 7, name: 'консервированная еда'},
       //consumables
-      { itemId: 8, name: 'match'},
+      { id: 8, name: 'спичка'},
       //equipment
-      { itemId: 9, name: 'flashlight'},
+      { id: 9, name: 'набор для разведения костра'},
     ],
     lootPool: {
       temp: [
-          // {name: 'dried grass', quantity: 2},{name: 'match', quantity: 2},{name: 'preserved food', quantity: 3},
+          // {name: 'сухая трава', quantity: 2},{name: 'спичка', quantity: 2},{name: 'консервированная еда', quantity: 3},
       ],
     },
   }

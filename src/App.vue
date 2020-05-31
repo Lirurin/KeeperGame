@@ -2,40 +2,30 @@
   #app
     .stats
       .stat-wrap
-        span.stat-text Stamina: {{ playerStamina }} %
+        span.stat-text Выносливость: {{ playerStamina }} %
         span.stat
           span.stat-bar.stat-bar--stamina(ref="staminaBar")
       .stat-wrap
-        span.stat-text Calories: {{ calories }} kcal
+        span.stat-text Калории: {{ calories }} ккал
         span.stat
           span.stat-bar.stat-bar--kcal(ref="kcalBar")
-    span.openInventory(@click='isInventoryOpen = !isInventoryOpen') Open inventory
+    span.openInventory(@click='isInventoryOpen = !isInventoryOpen') Открыть инвентарь
     .looting
       .wrap
-        h2 Currently you are in {{ nowYouIn }}
-        h2 You found {{ lastFound }}
+        h2 Сейчас вы в локакии {{ nowYouIn }}
+        h2 Вы нашли {{ lastFound }}
         .lootTimer
           .timerTrack(ref="timerTrack")
     .controls
-      button(@click="timedLoot()" class="lootBtn" :disabled="isDisabled") Loot
-      button(@click="eatSomething()" class="lootBtn" :disabled="isDisabled") Eat
-      button(@click="craftFire()" :disabled="isDisabled") fire
-      button(@click="addWood()" :disabled="isDisabled") add Wood
+      button(@click="timedLoot()" class="lootBtn" :disabled="isDisabled") Искать
+      button(@click="eatSomething()" class="lootBtn" :disabled="isDisabled") Поесть
+      //- button(@click="craftFire()" :disabled="isDisabled") fire
+      //- button(@click="addWood()" :disabled="isDisabled") add Wood
       .map
         button.buildings(@click="changeLocation(0)")
         button.park(@click="changeLocation(1)")
     .backpack(:class="{ opened: isInventoryOpen }")
-      .backpack__inner
-        .inventory
-          .inventory__items
-            div(v-for="item in availableItems" class='item' @click="addToCraft(item)") 
-              img.item__icon(:src="require(`./assets/items/${item.id}.svg`)", alt="...")
-              span {{ item.quantity }}
-          .inventory__craft
-            .ctafting__place
-              div.craft__item(v-for="item in craftPile" @click="removeFromCraft(item)")
-                img.item__icon(:src="require(`./assets/items/${item.itemId}.svg`)", alt="...")
-            span.craft__btn CRAFT
+      backpack
     .equipment
       transition(name="fade")
         .available-equip
@@ -61,13 +51,15 @@
 <script>
 import store from './store'
 import quests from './components/Quests';
+import backpack from './components/Backpack';
 import { mapActions, mapGetters } from 'vuex';
 
 export default {
   name: 'app',
   store,
   components: {
-      quests,
+    quests,
+    backpack,
   },
   data() {
       return {
@@ -76,7 +68,7 @@ export default {
 
         lootArr: [
           {
-          location: 'houses',
+          location: 'Здания',
           lootMap: [  
             { item: 0, rate: 30}, {item: 1, rate: 30},  { item: 2, rate: 20},
             { item: 3, rate: 7},  { item: 4, rate: 5},  { item: 5, rate: 30},
@@ -85,7 +77,7 @@ export default {
           ]
           },
           {
-          location: 'park',
+          location: 'Парк',
           lootMap: [  
             { item: 0, rate: 50}, { item: 1, rate: 30}, { item: 2, rate: 40},
             { item: 5, rate: 5},  { item: 6, rate: 10}, { item: 7, rate: 5},
@@ -93,15 +85,13 @@ export default {
           ]
           },
         ],
-        // CRAFTING
-        craftPile: [],
 
         // QUESTING
         isQuest: true,
 
         // LOOTING
         lootTime: 2000,
-        lastFound: 'nothing',
+        lastFound: 'ничего',
         isDisabled: false,
         playerStamina: 100,
         searchCount: 0,
@@ -139,7 +129,7 @@ export default {
         this.playerStamina -= this.getRandNum(5, 1);
         this.calories -= this.getRandNum(45, 10);
         this.giveItem({newItem:foundItem, num:1})
-        foundItem === undefined ? this.lastFound = 'nothing' : this.lastFound = foundItem;
+        foundItem === undefined ? this.lastFound = 'ничего' : this.lastFound = foundItem;
         this.isDisabled = false;
       }
     },
@@ -173,12 +163,12 @@ export default {
     eatSomething() {
       let innerThis = this;
       this.getLootPool.some((el) => {
-        if (el.name === 'food leftovers' && el.quantity > 0) {
-          this.takeItem({removedItem: 'food leftovers', num: 1})
+        if (el.name === 'остатки еды' && el.quantity > 0) {
+          this.takeItem({removedItem: 'остатки еды', num: 1})
           innerThis.calories += innerThis.getRandNum(250, 150);
         }
-        else if (el.name === 'preserved food' && el.quantity > 0) {
-          this.takeItem({removedItem: 'preserved food', num: 1})
+        else if (el.name === 'консервированная еда' && el.quantity > 0) {
+          this.takeItem({removedItem: 'консервированная еда', num: 1})
           innerThis.calories += innerThis.getRandNum(1300, 450);
         }
       });
@@ -199,43 +189,10 @@ export default {
     },
 
     addWood() {
-      if ((this.getCraftItem('stick', 1))) {
+      if ((this.getCraftItem('ветка', 1))) {
         this.burnTime += (300 + this.getRandNum(200, 100));
-        this.getLootPool.filter(obj => (obj.name === 'stick' && obj.quantity > 0) ? this.takeItem({removedItem:'stick', num: 1}) : null);
+        this.getLootPool.filter(obj => (obj.name === 'ветка' && obj.quantity > 0) ? this.takeItem({removedItem:'ветка', num: 1}) : null);
       }
-    },
-
-    // CRAFTING
-    numOfItemsInPile(item) {
-      let num = 0;
-      for ( let el of this.craftPile) {
-        el.itemId === item.id ? num++: num = num;
-      }
-      return num
-    },
-
-    removeFromCraft(item) {
-      this.craftPile.splice(item.id, 1)
-      console.log(this.craftPile)
-    },
-
-    addToCraft(item) {
-      this.numOfItemsInPile(item)
-      if (item.quantity >= 1 && this.numOfItemsInPile(item) < item.quantity) {
-        this.craftPile.push(this.getItemMap()[item.id])
-      }
-    },
-    getCraftItem(neededItem, itsQuantity) {
-      return this.getLootPool.some(el => el.name === neededItem && el.quantity >= itsQuantity)
-    },
-
-    craftFire() {
-      if (this.fireNear === false && this.getCraftItem('dried grass', 2) && this.getCraftItem('match', 1)) {
-        this.fireNear = true;
-        this.getLootPool.filter(obj => (obj.name === 'dried grass' && obj.quantity > 0) ? this.takeItem('dried grass', 1) : null);
-        this.getLootPool.filter(obj => (obj.name === 'match' && obj.quantity > 0) ? this.takeItem('match', 1) : null);
-      }
-      this.countdownFire()
     },
 
     // ACTIONS
@@ -258,15 +215,6 @@ export default {
     },
   },
 
-  computed: {
-      ...mapGetters(['getLootPool']),
-      availableItems: function() {
-        return this.getLootPool.filter(function(el) {
-          return el.quantity
-        })
-      },
-  },
-
   watch: {
     calories: function (val) {
       // bar limits
@@ -281,7 +229,7 @@ export default {
       val <= 0 ? this.playerStamina = 0 : this.playerStamina;
       // bar fullness
       this.$refs.staminaBar.style.width = `${val}%`
-    }
+    },
   },
 
   // LIFE СYCLE
@@ -293,8 +241,8 @@ export default {
     window.setInterval(this.caloriesToStamina, 10000) 
 
     //stat-bars
-    this.$refs.staminaBar.style.width = `${this.playerStamina}%`
-    this.$refs.kcalBar.style.width = `${this.calories*100/4000}%`
+    this.$refs.staminaBar.style.width = `${this.playerStamina}%`;
+    this.$refs.kcalBar.style.width = `${this.calories * 100/4000}%`;
   },
 
 }
