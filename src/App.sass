@@ -9,224 +9,142 @@ body
   margin: 0
   padding: 0
   overflow: hidden
-  #app
-    position: relative
-    height: 100vh
-    width: 100%
-    background: #0c2429
-  .looting
-    display: flex
-    justify-content: space-around
-    align-items: center
-  .openInventory
-    position: absolute
-    bottom: 30px
-    left: 30px
-    padding: 10px
-    border: 1px solid #ffffff
-    color: #ffffff
-    cursor: pointer
-  .backpack
-    z-index: 1
-    position: absolute
-    top: -50%
-    right: 50%
-    max-width: 768px
-    width: 100%
-    height: 768px
-    transform: translate(50%, -50%)
-    transition: top .6s ease
-    background: #0c2429 url('./assets/backpack.svg') center center no-repeat
-    background-size: 95%
-    box-shadow: 0 0 30px #fff
-  .backpack.opened
-    top: 50%
-    transition: top .6s ease
-  .backpack__inner
-    position: relative
-    width: 100%
-    height: 100%
-  .backpack__inventory
-    position: absolute
-    right: 50%
-    top: 50%
-    display: flex
-    flex-direction: column
-    justify-content: space-between
-    max-width: 400px
-    width: 100%
-    height: 400px
-    border: 1px solid #fff
-    border-radius: 15px
-    background-color: #0c2429
-    transform: translate(50%, -18%)
-  .backpack__cont
-    display: flex
-    flex: 1
-  .backpack__craft-possible
-    height: 95px
-    padding: 0 15px 5px 15px
-    border-bottom: 1px solid #ffffff
-  .backpack__craft-list
-    overflow: auto
-    max-height: 65px
-    padding: 4px 10px
-  .backpack__craft-title
-    display: block
-    margin-top: 5px
-    color: #ffffff
-    text-align: center
-  .backpack__craft-option
-    display: flex
-    justify-content: space-between
-    padding-bottom: 5px
-    color: #ffffff
-    font-size: 14px
-  .backpack__craft-create
-    border-bottom: 1px solid #ffffff
-    cursor: pointer
-  .backpack__craft-list
-    display: flex
-    flex-direction: column
-  .backpack__items
-    display: flex
-    width: 80%
-    padding: 10px 10px 5px 10px
-    overflow-y: auto
-  .backpack__craft
-    display: flex
-    flex-direction: column
-    align-items: center
-    width: 20%
-    padding: 15px 0 5px 0
-    border-left: 1px solid #ffffff
-  .backpack__craft-place
-    display: flex
-    flex-direction: column
-    align-items: center
-    width: 100%
-    max-height: 250px
-    overflow: auto
-  .backpack__title
-    padding: 4px
-    border: 1px solid #ffffff
-    border-radius: 5px
-    margin: auto auto 0 auto 
-    font-size: 15px
-    color: #ffffff
-    text-transform: uppercase
-  .backpack__craft-item
-    width: 50px
+#app
+  position: relative
+  height: 100vh
+  width: 100%
+  background: #0c2429
+.looting
+  position: absolute
+  top: 50%
+  right: 50%
+  display: flex
+  justify-content: space-around
+  align-items: center
+  transform: translate(50%, -50%)
+.looting__info
+  text-align: center
+.interface
+  z-index: 2
+  position: absolute
+  top: 20px
+  right: 30px
+  display: flex
+  flex-wrap: wrap
+.interface_btn
+  width: 60px
+  height: 60px
+  cursor: pointer
+  background-position: center center
+  background-repeat: no-repeat
+  background-size: 90%
+  &--inventory
+    margin-right: 15px
+    background-image: url('./assets/inv-icon.svg')
+  &--map
+    background-image: url('./assets/map-icon.svg')
+.equipment
+  position: absolute
+  right: 0
+  top: 0
+  height: 100vh
+  width: 300px
+  border: 2px inset #ffffff
+  display: flex
+  justify-content: center
+  flex-flow: column
+  svg
     height: 50px
-    padding: 4px
-    border: 1px solid #fff
-    border-radius: 5px
-    margin-bottom: 5px
-    color: #ffffff
-  .equipment
-    position: absolute
-    right: 0
-    top: 0
-    height: 100vh
-    width: 300px
-    border: 2px inset #ffffff
-    display: flex
-    justify-content: center
-    flex-flow: column
-    svg
-      height: 50px
-      fill: #fff
-  .location
-    max-width: 300px
-    width: 100%
-    min-height: 300px
-    border: 2px inset #ffffff
-    span
-      color: #fff
-      text-align: center
-  ul
-    list-style: none
-  .item
-    display: flex
-    flex-direction: column
-    align-items: center
-    width: 50px
-    height: 60px
-    margin: 5px
-    border: 1px solid #ffffff
+    fill: #fff
+.location
+  max-width: 300px
+  width: 100%
+  min-height: 300px
+  border: 2px inset #ffffff
+  span
     color: #fff
     text-align: center
-  .backpack__icon
-    width: 40px
-    height: 40px
-  .lootTimer
-    height: 10px
-    width: 300px
-    background: #fff
-    margin-top: 20px
-  .timerTrack
-    height: 10px
-    width: 0
-    background: green
-  .timerTrack--active
-    width: 100%
-  .wrap
-    display: flex
-    flex-direction: column
-    align-items: center
-    justify-content: center
-    width: 300px
-    h2
-      color: #fff
-
-  .stats
-    box-sizing: border-box
-    position: absolute
-    top: 0
-    left: 0
-    display: flex
-    flex-direction: column
-    justify-content: center
-    width: 320px
-    padding-bottom: 8px
-    border-bottom: 3px solid #ffffff
-    border-right: 3px solid #ffffff
-    overflow: hidden
-
-  .stat-wrap
-    margin: 5px 10px
-
-  .stat
-    position: relative
-    display: block
-    height: 20px
+ul
+  list-style: none
+.item
+  display: flex
+  flex-direction: column
+  align-items: center
+  width: 50px
+  height: 60px
+  margin: 5px
+  border: 1px solid #ffffff
+  color: #fff
+  text-align: center
+.backpack__icon
+  width: 40px
+  height: 40px
+.lootTimer
+  height: 10px
+  width: 300px
+  background: #fff
+  margin-top: 20px
+.timerTrack
+  height: 10px
+  width: 0
+  background: green
+.timerTrack--active
+  width: 100%
+.wrap
+  display: flex
+  flex-direction: column
+  align-items: center
+  justify-content: center
+  width: 300px
+  h2
     color: #fff
-    border: 2px inset #ffffff
-  .stat-bar
-    position: absolute
-    height: 100%
-    width: 0
-    transform-origin: left
-    transition: width 0.3s ease
-    background-color: white
-  .stat-text
+
+.stats
+  box-sizing: border-box
+  position: absolute
+  top: 0
+  left: 0
+  display: flex
+  flex-direction: column
+  justify-content: center
+  width: 320px
+  padding: 4px 0 8px 0
+  overflow: hidden
+
+.stat-wrap
+  margin: 5px 10px
+
+.stat
+  position: relative
+  display: block
+  height: 20px
+  color: #fff
+  border: 2px inset #ffffff
+.stat-bar
+  position: absolute
+  height: 100%
+  width: 0
+  transform-origin: left
+  transition: width 0.3s ease
+  background-color: white
+.stat-text
+  display: block
+  //padding-left: 10px
+  color: #fff
+.fade-enter-active, .fade-leave-active
+  transition: opacity .5s
+
+.fade-enter, .fade-leave-to
+  opacity: 0
+
+.available-equip__item
+  display: flex
+  flex-direction: column
+  span
     display: block
-    //padding-left: 10px
+    margin-top: 10px
     color: #fff
-  .fade-enter-active, .fade-leave-active
-    transition: opacity .5s
-
-  .fade-enter, .fade-leave-to
-    opacity: 0
-
-  .available-equip__item
-    display: flex
-    flex-direction: column
-    span
-      display: block
-      margin-top: 10px
-      color: #fff
-      text-align: center
+    text-align: center
 
 button
   width: 80px
@@ -241,43 +159,12 @@ button
   flex-flow: row wrap
   justify-content: center
 
-  .map
-    width: 100%
-    display: flex
-    justify-content: center
-    .buildings
-      width: 50px
-      height: 50px
-      background: url("./assets/house.svg") center center no-repeat
-      background-size: contain
-    .park
-      width: 50px
-      height: 50px
-      background: url("./assets/garden.svg") center center no-repeat
-      background-size: contain
-
-.text-window
+.map__glass,
+.backpack__glass
+  z-index: 0
   position: absolute
-  bottom: 60px
-  right: 50%
-  display: flex
-  flex-direction: column
-  justify-content: space-between
-  width: 600px
-  height: 400px
-  border: 1px solid white
-  padding: 20px
-  transform: translateX(50%)
-
-.text-message
-  color: white
-  text-align: center
-
-.text-controls
-  display: flex
-  flex-direction: column
-
-.option
-  margin: 10px 20px
-  color:  white
-  cursor: pointer
+  top: 0
+  bottom: 0
+  left: 0
+  right: 0
+  background-color: #0c2429ba

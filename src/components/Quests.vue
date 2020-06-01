@@ -79,5 +79,30 @@ export default {
 </script>
 
 <style scoped lang="sass">
+  .text-window
+    position: absolute
+    bottom: 60px
+    right: 50%
+    display: flex
+    flex-direction: column
+    justify-content: space-between
+    width: 600px
+    height: 400px
+    border: 1px solid white
+    padding: 20px
+    background: #0c2429
+    transform: translateX(50%)
 
+  .text-message
+    color: white
+    text-align: center
+
+  .text-controls
+    display: flex
+    flex-direction: column
+
+  .option
+    margin: 10px 20px
+    color:  white
+    cursor: pointer
 </style>
