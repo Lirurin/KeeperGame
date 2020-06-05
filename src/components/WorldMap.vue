@@ -2,6 +2,7 @@
   .map__cont
     h2.map__title Сейчас вы в локации || {{ nowYouAreIn }} ||
     .map__inner
+      .map__preloader
       .map__location.map__location--buildings(@click="changeLocation(0)")
         .map__location-cont(:class="{ 'current': isCurrent[0] }")
           .map__location-title

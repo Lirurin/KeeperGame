@@ -1,11 +1,13 @@
 <template lang="pug">
-  .quests
-    button(@click="setCurrentQuest(currentQuestId)") QUEST
-    template(v-if='isQuestStarted')
-      .text-window
-        p.text-message {{ currentQuest.remark[currentRemark].text }}
-        .text-controls
-          span(v-for="(option) in currentQuest.remark[currentRemark].routes" @click  = 'optionClick(option, currentQuestId)' class='option') {{ option.text }}
+  //- .quests
+  //-   button(@click="setCurrentQuest(currentQuestId)") QUEST
+  //-   .quests__book
+  //-     h2.quests__title Журнал
+  //-     template(v-if='isQuestStarted')
+  //-       .text-window
+  //-         p.text-message {{ currentQuest.remark[currentRemark].text }}
+  //-         .text-controls
+  //-           span(v-for="(option) in currentQuest.remark[currentRemark].routes" @click  = 'optionClick(option, currentQuestId)' class='option') {{ option.text }}
 </template>>
  
 <script>
@@ -66,7 +68,7 @@ export default {
     optionClick(option, id) {
       this.currentRemark = option.leadsTo;
       if ('reward' in option) {
-        this.giveItem({newItem: option.reward.name, num: option.reward.quantity})
+        this.giveItem({newItemId: option.reward.itemId, num: option.reward.quantity})
       }
       if ('questEnd' in option && option.questEnd === true) {
         this.isQuestStarted = false;
@@ -78,31 +80,4 @@ export default {
 }
 </script>
 
-<style scoped lang="sass">
-  .text-window
-    position: absolute
-    bottom: 60px
-    right: 50%
-    display: flex
-    flex-direction: column
-    justify-content: space-between
-    width: 600px
-    height: 400px
-    border: 1px solid white
-    padding: 20px
-    background: #0c2429
-    transform: translateX(50%)
-
-  .text-message
-    color: white
-    text-align: center
-
-  .text-controls
-    display: flex
-    flex-direction: column
-
-  .option
-    margin: 10px 20px
-    color:  white
-    cursor: pointer
-</style>
+<style lang="sass" src="./Quests.sass"></style>

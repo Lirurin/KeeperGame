@@ -73,7 +73,7 @@ export default {
         this.takeItem({removedItem: this.getItemMap()[item.id].name, num: item.quantity}, )
       }
       this.craftPile = [];
-      this.giveItem( {newItem: recipe.gives.name, num: recipe.gives.quantity})
+      this.giveItem( {newItem: recipe.gives.id, num: recipe.gives.quantity})
     },
 
     removeFromCraft(index) {
@@ -87,13 +87,13 @@ export default {
       }
     },
     getCraftItem(neededItem, itsQuantity) {
-      return this.getLootPool.some(el => el.name === neededItem && el.quantity >= itsQuantity)
+      return this.getinventory.some(el => el.name === neededItem && el.quantity >= itsQuantity)
     },
   },
   computed: {
-    ...mapGetters(['getLootPool']),
+    ...mapGetters(['getinventory']),
     availableItems: function() {
-      return this.getLootPool.filter(function(el) {
+      return this.getinventory.filter(function(el) {
         return el.quantity
       })
     },
@@ -116,110 +116,4 @@ export default {
 }
 </script>
 
-<style lang="sass">
-  .backpack
-    z-index: 1
-    position: absolute
-    top: -50%
-    right: 50%
-    width: 100vw
-    height: 100vh
-    transform: translate(50%, -50%)
-    transition: top .6s ease
-  .backpack.opened
-    top: 50%
-    transition: top .6s ease
-  .backpack__wrap
-    position: absolute
-    top: 50%
-    right: 50%
-    transform: translate(50%, -50%)
-    max-width: 768px
-    width: 100%
-    height: 768px
-    background: url('../assets/backpack.svg') center center no-repeat
-    background-size: 95%
-  .backpack__inner
-    position: relative
-    width: 100%
-    height: 100%
-  .backpack__inventory
-    position: absolute
-    right: 50%
-    top: 50%
-    display: flex
-    flex-direction: column
-    justify-content: space-between
-    max-width: 400px
-    width: 100%
-    height: 400px
-    border: 1px solid #fff
-    border-radius: 15px
-    background-color: #0c2429
-    transform: translate(50%, -18%)
-  .backpack__cont
-    display: flex
-    flex: 1
-  .backpack__craft-possible
-    height: 95px
-    padding: 0 15px 5px 15px
-    border-bottom: 1px solid #ffffff
-  .backpack__craft-list
-    overflow: auto
-    max-height: 65px
-    padding: 4px 10px
-  .backpack__craft-title
-    display: block
-    margin-top: 5px
-    color: #ffffff
-    text-align: center
-  .backpack__craft-option
-    display: flex
-    justify-content: space-between
-    padding-bottom: 5px
-    color: #ffffff
-    font-size: 14px
-  .backpack__craft-create
-    border-bottom: 1px solid #ffffff
-    cursor: pointer
-  .backpack__craft-list
-    display: flex
-    flex-direction: column
-  .backpack__items
-    display: flex
-    flex-wrap: wrap
-    align-items: flex-start
-    align-content: flex-start
-    width: 80%
-    padding: 10px 8px 5px 8px
-    overflow-y: auto
-  .backpack__craft
-    display: flex
-    flex-direction: column
-    align-items: center
-    width: 20%
-    padding: 5px 0
-    border-left: 1px solid #ffffff
-  .backpack__craft-place
-    display: flex
-    flex-direction: column
-    align-items: center
-    width: 100%
-    max-height: 250px
-    padding-top: 10px
-    overflow: auto
-  .backpack__title
-    padding: 4px
-    border-bottom: 1px solid #ffffff
-    font-size: 15px
-    color: #ffffff
-    text-transform: uppercase
-  .backpack__craft-item
-    width: 50px
-    height: 50px
-    padding: 4px
-    border: 1px solid #fff
-    border-radius: 5px
-    margin-bottom: 5px
-    color: #ffffff
-</style>
+<style lang="sass" src='./Backpack.sass'></style>

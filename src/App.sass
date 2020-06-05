@@ -9,21 +9,13 @@ body
   margin: 0
   padding: 0
   overflow: hidden
+
 #app
   position: relative
   height: 100vh
   width: 100%
   background: #0c2429
-.looting
-  position: absolute
-  top: 50%
-  right: 50%
-  display: flex
-  justify-content: space-around
-  align-items: center
-  transform: translate(50%, -50%)
-.looting__info
-  text-align: center
+
 .interface
   z-index: 2
   position: absolute
@@ -31,6 +23,7 @@ body
   right: 30px
   display: flex
   flex-wrap: wrap
+
 .interface_btn
   width: 60px
   height: 60px
@@ -43,6 +36,7 @@ body
     background-image: url('./assets/inv-icon.svg')
   &--map
     background-image: url('./assets/map-icon.svg')
+
 .equipment
   position: absolute
   right: 0
@@ -56,40 +50,7 @@ body
   svg
     height: 50px
     fill: #fff
-.location
-  max-width: 300px
-  width: 100%
-  min-height: 300px
-  border: 2px inset #ffffff
-  span
-    color: #fff
-    text-align: center
-ul
-  list-style: none
-.item
-  display: flex
-  flex-direction: column
-  align-items: center
-  width: 50px
-  height: 60px
-  margin: 5px
-  border: 1px solid #ffffff
-  color: #fff
-  text-align: center
-.backpack__icon
-  width: 40px
-  height: 40px
-.lootTimer
-  height: 10px
-  width: 300px
-  background: #fff
-  margin-top: 20px
-.timerTrack
-  height: 10px
-  width: 0
-  background: green
-.timerTrack--active
-  width: 100%
+
 .wrap
   display: flex
   flex-direction: column
@@ -120,6 +81,7 @@ ul
   height: 20px
   color: #fff
   border: 2px inset #ffffff
+
 .stat-bar
   position: absolute
   height: 100%
@@ -127,15 +89,10 @@ ul
   transform-origin: left
   transition: width 0.3s ease
   background-color: white
+
 .stat-text
   display: block
-  //padding-left: 10px
   color: #fff
-.fade-enter-active, .fade-leave-active
-  transition: opacity .5s
-
-.fade-enter, .fade-leave-to
-  opacity: 0
 
 .available-equip__item
   display: flex

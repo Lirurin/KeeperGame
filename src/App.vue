@@ -12,25 +12,17 @@
     .interface
       span.interface_btn.interface_btn--inventory(@click='openInventory')
       span.interface_btn.interface_btn--map(@click='openMap')
-    .looting
-      .wrap
-        h2.looting__info
-          | Вы нашли 
-          br
-          | || {{ lastFound }} ||
-        .lootTimer
-          .timerTrack(ref="timerTrack")
+    Looting(@staminaUsed='decreaseStats')
     .controls
-      button(@click="timedLoot()" class="lootBtn" :disabled="isDisabled") Искать
-      button(@click="eatSomething()" class="lootBtn" :disabled="isDisabled") Поесть
+      button(@click="eatSomething()" class="lootBtn") Поесть
       //- button(@click="craftFire()" :disabled="isDisabled") fire
       //- button(@click="addWood()" :disabled="isDisabled") add Wood
       .map(:class="{ opened: isMapOpen }")
         .map__glass(@click='closeAllInterface')
-        worldMap
+        WorldMap
     .backpack(:class="{ opened: isInventoryOpen }")
       .backpack__glass(@click='closeAllInterface')
-      backpack
+      Backpack
     //- .equipment
     //-   transition(name="fade")
     //-     .available-equip
@@ -50,106 +42,49 @@
     //-           c-1.809,1.808-2.712,3.949-2.712,6.424v18.271c0,2.479,0.903,4.617,2.712,6.427c1.809,1.811,3.949,2.711,6.423,2.711h383.722\
     //-           c2.471,0,4.609-0.9,6.42-2.711c1.807-1.81,2.714-3.948,2.714-6.427v-18.271C456.806,481.737,455.905,479.596,454.092,477.788z')
     //-         span Burn Time: {{ burnTime }}
-    quests(v-if = 'isQuest')
+    Quests(v-if = 'isQuest')
 </template>
 
 <script>
 import store from './store'
-import quests from './components/Quests';
-import backpack from './components/Backpack';
-import worldMap from './components/WorldMap';
+import Quests from './components/Quests';
+import Backpack from './components/Backpack';
+import WorldMap from './components/WorldMap';
+import Looting from './components/Looting'
 import { mapActions, mapGetters } from 'vuex';
 
 export default {
   name: 'app',
   store,
   components: {
-    quests,
-    backpack,
-    worldMap
+    Quests,
+    Backpack,
+    WorldMap,
+    Looting
   },
   data() {
-      return {
-        // INTERFACE
-        isInventoryOpen: false,
-        isMapOpen: false,
+    return {
+      // INTERFACE
+      isInventoryOpen: false,
+      isMapOpen: false,
 
-        // QUESTING
-        isQuest: true,
+      // QUESTING
+      isQuest: true,
 
-        // LOOTING
-        lootTime: 2000,
-        lastFound: 'ничего',
-        isDisabled: false,
-        playerStamina: 100,
-        searchCount: 0,
-        countedPers: [],
-        calories: 3000,
-        fireNear: false,
-        burnTime: 2000,
+      //NEEDS
+      calories: 3000,
+      playerStamina: 100,
     }
   },
 
   methods: {
-    ...mapActions(['giveItem', 'takeItem', 'setLootPool']),
-    ...mapGetters(['getItemMap', 'getLocations', 'getCurrentLocationIndex']),
-
-    // LOOTING
-    timedLoot() {
-      let transitionTime = (this.lootTime / 1000) + 's';
-      this.isDisabled = true;
-      this.$refs.timerTrack.classList.add('timerTrack--active');
-      this.$refs.timerTrack.style.transitionDuration = transitionTime;
-      setTimeout(() => {
-        this.$refs.timerTrack.classList.remove('timerTrack--active');
-        this.$refs.timerTrack.style.transitionDuration = '0s';
-      }, this.lootTime);
-      setTimeout(function () { this.searchLoot() }.bind(this), this.lootTime);
-    },
-    searchLoot() {
-      if (this.playerStamina <= 0) {
-        console.log('fatigue');
-        this.isDisabled = false;
-      } else {
-        let foundItem = this.getItemMap()[this.randomItem()].name;
-        this.playerStamina -= this.getRandNum(5, 1);
-        this.calories -= this.getRandNum(45, 10);
-        this.giveItem({newItem:foundItem, num:1})
-        foundItem === undefined ? this.lastFound = 'ничего' : this.lastFound = foundItem;
-        this.isDisabled = false;
-      }
-    },
-
-    // RANDOMIZERS
-    randomItem() {
-      // Normalise rates
-      let locationLootMap = this.getLocations()[this.getCurrentLocationIndex()].lootMap;
-      let rateTotal = 0;
-      for (let i = 0; i < locationLootMap.length; i++) {
-        rateTotal += locationLootMap[i].rate;
-      }
-      for (let i = 0; i < locationLootMap.length; i++) {
-        locationLootMap[i].distribution = locationLootMap[i].rate / rateTotal;
-      }
-      //return item name
-      let key = 0;
-      let selector = Math.random();
-      while (selector > 0) {
-        selector -= locationLootMap[key].distribution;
-        key++;
-      }
-      key--;
-      return locationLootMap[key].item;
-    },
-    getRandNum(max, min) {
-      let rand = Math.floor(Math.random() * Math.floor(max));
-      return rand <= min ? min : rand
-    },
+    ...mapActions(['takeItem', 'setinventory']),
+    ...mapGetters(['getItemMap']),
 
     // SURVIVAL AND NEEDS
     eatSomething() {
       let innerThis = this;
-      this.getLootPool.some((el) => {
+      this.getinventory.some((el) => {
         if (el.name === 'остатки еды' && el.quantity > 0) {
           this.takeItem({removedItem: 'остатки еды', num: 1})
           innerThis.calories += innerThis.getRandNum(250, 150);
@@ -175,10 +110,15 @@ export default {
       }
     },
 
+    decreaseStats(data) {
+      this.calories -= data.usedCalories;
+      this.playerStamina -= data.usedStamina;
+    },
+
     addWood() {
       if ((this.getCraftItem('ветка', 1))) {
         this.burnTime += (300 + this.getRandNum(200, 100));
-        this.getLootPool.filter(obj => (obj.name === 'ветка' && obj.quantity > 0) ? this.takeItem({removedItem:'ветка', num: 1}) : null);
+        this.getinventory.filter(obj => (obj.name === 'ветка' && obj.quantity > 0) ? this.takeItem({removedItem:'ветка', num: 1}) : null);
       }
     },
 
@@ -195,29 +135,10 @@ export default {
       this.isInventoryOpen === true? this.isInventoryOpen = false: null
     },
     closeAllInterface() {
-      console.log('outside')
       this.isMapOpen = false;
       this.isInventoryOpen = false;
     },
-    // TIMERS
-    countdownFire() {
-      if (this.burnTime > 0) {
-        this.burnTime -= 1;
-        setTimeout(this.countdownFire, 100)
-      } else {
-        this.disableFire();
-      }
-    },
   },
-
-  // computed: {
-  //   ...mapGetters(['getCurrentLocationIndex()']),
-
-  //   nowYouAreIn: function() {
-  //     console.log(this.getLocations()[this.getCurrentLocationIndex()].location)
-  //     return this.getLocations()[this.getCurrentLocationIndex()].location
-  //   }
-  // },
 
   watch: {
     calories: function (val) {
@@ -239,7 +160,7 @@ export default {
   // LIFE СYCLE
   mounted() {
     // initialize inventory
-    this.getItemMap().forEach(item => this.setLootPool(item));
+    this.getItemMap().forEach(item => this.setinventory(item));
 
     //hunger simulation
     window.setInterval(this.caloriesToStamina, 10000) 
@@ -252,6 +173,4 @@ export default {
 }
 </script>
 
-<style lang="sass" src="./App.sass">
-
-</style>
+<style lang="sass" src="./App.sass"></style>
