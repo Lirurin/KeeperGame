@@ -14,7 +14,7 @@
       span.interface__btn.interface__btn--quests(@click='openQuestBook')
         span.interface__btn--available(:class='{show: isQuestAvailable}') {{ availableQuestsNubber }}
       span.interface__btn.interface__btn--map(@click='openMap')
-    Looting(@statsUsed='decreaseStats')
+    Looting(@statsUsed='decreaseStats' :stamina = 'playerStamina' )
     .map(:class="{ opened: isMapOpen }")
       .map__glass(@click='closeAllInterface')
       WorldMap

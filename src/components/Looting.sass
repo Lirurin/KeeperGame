@@ -78,6 +78,7 @@
   transition: transform .3s linear
 
 .loot__place-back
+  z-index: -1
   position: absolute
   top: 0
   left: 0
@@ -89,10 +90,12 @@
   transition: transform .3s linear
 
 .loot__place-back.disabled
+  z-index: 1
   transform: rotateX(0)
   transition: transform .3s linear
 
 .loot__place-back.disabled.selected
+  z-index: 1
   color: transparent
 
 .loot__place.selected

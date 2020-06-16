@@ -2,7 +2,7 @@
 .looting
   .wrap
     .loot__area
-      .loot__list(:class='{ shown: isLocationSeached }')
+      .loot__list(:class='{ shown: isLocationSearched }')
         .loot__place-wrap(v-for ='(place, index) in locationPlaces')
           span.loot__place(
             @click = 'choosePlace(place.placeId)' 
@@ -10,7 +10,7 @@
             ) {{ place.name }}
             span.loot__empty(v-if = 'place.searchCount === 0') 
           span.loot__place-back( :class='{disabled: lootingStarted, selected: index===currentplaceId,filling: lootingStarted }') недоступно
-      .loot__info(:class='{ shown: isLocationSeached }')
+      .loot__info(:class='{ shown: isLocationSearched }')
         .loot__icon
             img(v-if="isPlaceSelected" :src="require(`../assets/places/${selectedPlace.iconId}.svg`)", alt="...")
         .loot__description
@@ -23,7 +23,7 @@
         .loot__action
           span.loot__action-btn(v-if="isPlaceSelected" :class="{ disabled: lootingStarted }" @click='searchInPlace(selectedPlace.placeId)') обыскать
           span.loot__action-back(:class="{ disabled: lootingStarted }") Обыск...
-      .loot__show(v-if="!isLocationSeached")
+      .loot__show(v-if="!isLocationSearched")
         .loot__search-btn(@click="showLootable")
           svg.loot__progress-meter(width='200' height='200' viewport='0 0 100 100' version='1.1' xmlns='http://www.w3.org/2000/svg')
             circle.loot__progress-bar(:class='{full: isSearching}' r='55' cx='100' cy='100')
@@ -34,6 +34,9 @@ import {mapGetters, mapActions} from 'vuex'
 
 export default {
   name: 'looting',
+  props: {
+    stamina: Number
+  },
   data() {
     return {
       lootingStarted: false,
@@ -89,7 +92,7 @@ export default {
     },
 
     searchLoot() {
-      if (this.playerStamina <= 0) {
+      if (this.$props.stamina <= 0) {
         console.log('fatigue');
       } else {
         let foundItemId = this.randomItem()
@@ -130,7 +133,10 @@ export default {
     },
   },
   computed: {
-    isLocationSeached: function() {
+    isLocationSearched: function() {
+      this.currentplaceId = null;
+      this.selectedPlace = {};
+      this.isPlaceSelected = false;
       return this.getLocations()[this.getCurrentLocationIndex()].searched
     },
     locationPlaces: function() {
