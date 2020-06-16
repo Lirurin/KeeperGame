@@ -1,0 +1,154 @@
+@keyframes showNum
+  0%
+    transform: translate(50%, -50%) rotateY(0)
+  25%
+    transform: translate(50%, -50%) rotateY(90deg)
+  50%
+    transform: translate(50%, -50%) rotateY(0)
+  75%
+    transform: translate(50%, -50%) rotateY(-90deg)
+  100%
+    transform: translate(50%, -50%) rotateY(0)
+  
+*
+  box-sizing: border-box
+
+ul, li 
+  padding: 0
+  margin: 0
+
+body
+  margin: 0
+  padding: 0
+  overflow: hidden
+
+#app
+  position: relative
+  height: 100vh
+  width: 100%
+  background: #0c2429
+
+.interface
+  z-index: 2
+  position: absolute
+  top: 20px
+  right: 30px
+  display: flex
+  flex-wrap: wrap
+
+.interface__btn
+  position: relative
+  width: 60px
+  height: 60px
+  margin-left: 15px
+  background-position: center center
+  background-repeat: no-repeat
+  background-size: 90%
+  cursor: pointer
+  &--inventory
+    background-image: url('./assets/inv-icon.svg')
+  &--map
+    background-image: url('./assets/map-icon.svg')
+  &--quests
+    background-image: url('./assets/quests-icon.svg')
+    background-size: 100%
+  &--available
+    position: absolute
+    top: 50%
+    right: 44%
+    font-size: 22px
+    font-weight: bold
+    transform: translate(50%, -50%)
+    user-select: none
+  &--available.show
+    animation: showNum 1.3s ease infinite
+
+.equipment
+  position: absolute
+  right: 0
+  top: 0
+  height: 100vh
+  width: 300px
+  border: 2px inset #ffffff
+  display: flex
+  justify-content: center
+  flex-flow: column
+  svg
+    height: 50px
+    fill: #fff
+
+.wrap
+  display: flex
+  flex-direction: column
+  align-items: center
+  justify-content: center
+  width: 300px
+  h2
+    color: #fff
+
+.stats
+  box-sizing: border-box
+  position: absolute
+  top: 0
+  left: 0
+  display: flex
+  flex-direction: column
+  justify-content: center
+  width: 320px
+  padding: 4px 0 8px 0
+  overflow: hidden
+
+.stat-wrap
+  margin: 5px 10px
+
+.stat
+  position: relative
+  display: block
+  height: 20px
+  color: #fff
+  border: 2px inset #ffffff
+
+.stat-bar
+  position: absolute
+  height: 100%
+  width: 0
+  transform-origin: left
+  transition: width 0.3s ease
+  background-color: white
+
+.stat-text
+  display: block
+  color: #fff
+
+.available-equip__item
+  display: flex
+  flex-direction: column
+  span
+    display: block
+    margin-top: 10px
+    color: #fff
+    text-align: center
+
+button
+  width: 80px
+  height: 30px
+  border: 1px inset #fff
+  margin: 20px 10px
+  color: #fff
+  background: #242424
+
+.controls
+  display: flex
+  flex-flow: row wrap
+  justify-content: center
+
+.map__glass,
+.backpack__glass,
+.quest__glass
+  z-index: 0
+  position: absolute
+  top: 0
+  bottom: 0
+  left: 0
+  right: 0
+  background-color: #0c2429ba
